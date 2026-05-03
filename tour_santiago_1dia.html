@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tour Santiago 1 Día</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<style>
+body{
+    font-family:Arial,sans-serif;
+    margin:0;
+    background:#f4f7f9;
+}
+header{
+    background:#003049;
+    color:white;
+    text-align:center;
+    padding:30px;
+}
+.container{
+    width:92%;
+    margin:auto;
+    padding:20px;
+}
+.card{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:25px;
+    box-shadow:0 2px 10px rgba(0,0,0,0.1);
+}
+h2{
+    color:#003049;
+}
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+table th, table td{
+    border:1px solid #ddd;
+    padding:12px;
+}
+table th{
+    background:#003049;
+    color:white;
+}
+#map{
+    height:550px;
+    border-radius:12px;
+}
+.galeria{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+}
+.galeria img{
+    width:100%;
+    border-radius:12px;
+}
+footer{
+    background:#003049;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Tour Turístico Santiago de Chile</h1>
+<p>Ruta económica de 1 día desde el Aeropuerto</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>Resumen de recorrido</h2>
+
+<table>
+<tr>
+<th>Destino</th>
+<th>Distancia</th>
+<th>Uber aprox.</th>
+<th>Entrada</th>
+</tr>
+
+<tr>
+<td>Plaza de Armas</td>
+<td>17 km</td>
+<td>12.000 - 18.000 CLP</td>
+<td>Gratis</td>
+</tr>
+
+<tr>
+<td>Mercado Central</td>
+<td>1 km</td>
+<td>2.000 - 3.500 CLP</td>
+<td>Gratis</td>
+</tr>
+
+<tr>
+<td>Cerro Santa Lucía</td>
+<td>2 km</td>
+<td>3.000 - 5.000 CLP</td>
+<td>Gratis</td>
+</tr>
+
+<tr>
+<td>La Moneda</td>
+<td>2 km</td>
+<td>3.000 - 5.000 CLP</td>
+<td>Gratis</td>
+</tr>
+
+<tr>
+<td>Parque Metropolitano</td>
+<td>5 km</td>
+<td>5.000 - 8.000 CLP</td>
+<td>Gratis</td>
+</tr>
+
+</table>
+</div>
+
+<div class="card">
+<h2>Mapa del recorrido</h2>
+<div id="map"></div>
+</div>
+
+<div class="card">
+<h2>Lugares turísticos</h2>
+
+<div class="galeria">
+
+<div>
+<img src="https://upload.wikimedia.org/wikipedia/commons/6/65/Plaza_de_Armas_Santiago.jpg">
+<h3>Plaza de Armas</h3>
+</div>
+
+<div>
+<img src="https://upload.wikimedia.org/wikipedia/commons/9/9f/Mercado_Central_Santiago.jpg">
+<h3>Mercado Central</h3>
+</div>
+
+<div>
+<img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Cerro_Santa_Lucia.jpg">
+<h3>Cerro Santa Lucía</h3>
+</div>
+
+<div>
+<img src="https://upload.wikimedia.org/wikipedia/commons/4/49/Palacio_de_La_Moneda.jpg">
+<h3>La Moneda</h3>
+</div>
+
+<div>
+<img src="https://upload.wikimedia.org/wikipedia/commons/f/f9/Cerro_San_Cristobal.jpg">
+<h3>Parque Metropolitano</h3>
+</div>
+
+</div>
+
+</div>
+
+</div>
+
+<footer>
+Santiago de Chile • Tour económico de 1 día
+</footer>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+
+var map = L.map('map').setView([-33.4489, -70.6693], 11);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+ attribution:'© OpenStreetMap'
+}).addTo(map);
+
+var lugares = [
+["Aeropuerto",-33.3928,-70.7858],
+["Plaza de Armas",-33.4372,-70.6506],
+["Mercado Central",-33.4348,-70.6532],
+["Cerro Santa Lucía",-33.4407,-70.6433],
+["La Moneda",-33.4429,-70.6539],
+["Parque Metropolitano",-33.4194,-70.6419]
+];
+
+var ruta = [];
+
+lugares.forEach(function(lugar){
+
+L.marker([lugar[1], lugar[2]])
+.addTo(map)
+.bindPopup("<b>"+lugar[0]+"</b>");
+
+ruta.push([lugar[1], lugar[2]]);
+
+});
+
+L.polyline(ruta,{
+color:'blue',
+weight:4
+}).addTo(map);
+
+</script>
+
+</body>
+</html>
