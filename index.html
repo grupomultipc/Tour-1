@@ -173,6 +173,21 @@
             cursor: not-allowed;
         }
 
+        .loading {
+            text-align: center;
+            color: #667eea;
+            font-size: 1.1em;
+        }
+
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+            border-left: 4px solid #c62828;
+        }
+
         @media (max-width: 768px) {
             header h1 {
                 font-size: 1.8em;
@@ -207,7 +222,7 @@
         <h2>📊 Nuestros Tours</h2>
         <div class="stats">
             <div class="stat-item">
-                <div class="number" id="total-tours">1</div>
+                <div class="number" id="total-tours">0</div>
                 <div class="label">Tours Disponibles</div>
             </div>
             <div class="stat-item">
@@ -226,7 +241,7 @@
         <h2>🗺️ Tours Disponibles</h2>
 
         <div class="tours-grid" id="tours-container">
-            <!-- Las tarjetas de tours se cargarán dinámicamente aquí -->
+            <div class="loading">⏳ Cargando tours...</div>
         </div>
 
         <div class="info-box">
@@ -282,51 +297,117 @@
 </footer>
 
 <script>
-// Tours disponibles - estructura: {nombre, descripcion, archivo}
-const toursDisponibles = [
-    {
-        nombre: "Turismo en Puerto Natales",
-        descripcion: "Explora lugares económicos y fascinantes desde Puerto Natales",
-        archivo: "turismo_puerto_natales_imagenes_funcionales.html",
-        emoji: "🏖️"
-    }
-    // Añade más tours aquí cuando crees nuevos archivos HTML
-    // {
-    //     nombre: "Torres del Paine",
-    //     descripcion: "La joya de la Patagonia Chilena",
-    //     archivo: "torres_del_paine.html",
-    //     emoji: "⛰️"
-    // }
-];
+// Configuración de GitHub
+const REPO_OWNER = 'grupomultipc';
+const REPO_NAME = 'Tour-1';
+const GITHUB_API = `https://api.github.com/repos/${REPO_OWNER}/${REPO_NAME}/contents`;
 
-// Cargar los tours en la página
-function cargarTours() {
+// Mapeo de nombres de archivos a emojis y descripciones (personalizable)
+const tourConfig = {
+    'turismo_puerto_natales_imagenes_funcionales.html': {
+        emoji: '🏖️',
+        nombre: 'Turismo en Puerto Natales',
+        descripcion: 'Explora lugares económicos y fascinantes desde Puerto Natales'
+    },
+    'torres_del_paine.html': {
+        emoji: '⛰️',
+        nombre: 'Torres del Paine',
+        descripcion: 'La joya de la Patagonia Chilena'
+    },
+    'glaciar_perito_moreno.html': {
+        emoji: '❄️',
+        nombre: 'Glaciar Perito Moreno',
+        descripcion: 'Espectáculo de hielo y naturaleza'
+    },
+    'laguna_azul.html': {
+        emoji: '💎',
+        nombre: 'Laguna Azul',
+        descripcion: 'Aguas cristalinas de ensueño'
+    }
+};
+
+// Obtener nombre legible del archivo
+function obtenerNombreLegible(nombreArchivo) {
+    if (tourConfig[nombreArchivo]) {
+        return tourConfig[nombreArchivo];
+    }
+    
+    // Generar automáticamente si no está en la configuración
+    const nombre = nombreArchivo
+        .replace('.html', '')
+        .replace(/_/g, ' ')
+        .replace(/(^|\s)\w/g, letra => letra.toUpperCase());
+    
+    return {
+        emoji: '🗺️',
+        nombre: nombre,
+        descripcion: 'Descubre este destino turístico'
+    };
+}
+
+// Cargar tours desde la API de GitHub
+async function cargarTours() {
     const container = document.getElementById('tours-container');
     
-    if (toursDisponibles.length === 0) {
-        container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">No hay tours disponibles aún. ¡Vuelve pronto!</p>';
-        return;
-    }
-
-    container.innerHTML = toursDisponibles.map(tour => `
-        <a href="${tour.archivo}" class="tour-card">
-            <div>
-                <h3>${tour.emoji} ${tour.nombre}</h3>
-                <p>${tour.descripcion}</p>
+    try {
+        const response = await fetch(GITHUB_API);
+        
+        if (!response.ok) {
+            throw new Error('No se pudo conectar con la API de GitHub');
+        }
+        
+        const archivos = await response.json();
+        
+        // Filtrar solo archivos HTML (excepto index.html)
+        const archivosHTML = archivos
+            .filter(archivo => 
+                archivo.type === 'file' && 
+                archivo.name.endsWith('.html') &&
+                archivo.name !== 'index.html' &&
+                archivo.name !== 'index (1).html'
+            )
+            .sort((a, b) => a.name.localeCompare(b.name));
+        
+        if (archivosHTML.length === 0) {
+            container.innerHTML = '<p style="grid-column: 1/-1; text-align: center; color: #666;">No hay tours disponibles aún. ¡Vuelve pronto!</p>';
+            document.getElementById('total-tours').textContent = '0';
+            return;
+        }
+        
+        // Crear tarjetas de tours
+        const toursHTML = archivosHTML.map(archivo => {
+            const config = obtenerNombreLegible(archivo.name);
+            return `
+                <a href="${archivo.name}" class="tour-card">
+                    <div>
+                        <h3>${config.emoji} ${config.nombre}</h3>
+                        <p>${config.descripcion}</p>
+                    </div>
+                    <span class="btn">Explorar →</span>
+                </a>
+            `;
+        }).join('');
+        
+        container.innerHTML = toursHTML;
+        document.getElementById('total-tours').textContent = archivosHTML.length;
+        
+    } catch (error) {
+        console.error('Error cargando tours:', error);
+        container.innerHTML = `
+            <div style="grid-column: 1/-1;" class="error-message">
+                <strong>⚠️ Error:</strong> No se pudieron cargar los tours en este momento. 
+                Por favor, intenta recargar la página.
             </div>
-            <span class="btn">Explorar →</span>
-        </a>
-    `).join('');
-
-    // Actualizar el contador de tours
-    document.getElementById('total-tours').textContent = toursDisponibles.length;
+        `;
+        document.getElementById('total-tours').textContent = '0';
+    }
 }
 
 // Cargar tours cuando la página está lista
 document.addEventListener('DOMContentLoaded', cargarTours);
 
-// Opcional: Auto-actualizar cada 30 segundos (útil si se añaden tours dinámicamente)
-setInterval(cargarTours, 30000);
+// Auto-actualizar cada 60 segundos (útil si se añaden tours dinámicamente)
+setInterval(cargarTours, 60000);
 </script>
 
 </body>
