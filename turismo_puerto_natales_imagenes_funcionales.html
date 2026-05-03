@@ -1,0 +1,194 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Turismo en Puerto Natales</title>
+
+<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<style>
+body {
+    font-family: Arial, sans-serif;
+    margin:0;
+    background:#f4f7f9;
+}
+
+header {
+    background:#0b4f6c;
+    color:white;
+    text-align:center;
+    padding:25px;
+}
+
+.container {
+    width:92%;
+    margin:auto;
+    padding:20px;
+}
+
+.card {
+    background:white;
+    padding:20px;
+    margin-bottom:25px;
+    border-radius:12px;
+    box-shadow:0 2px 8px rgba(0,0,0,0.1);
+}
+
+h2 {
+    color:#0b4f6c;
+}
+
+table {
+    width:100%;
+    border-collapse:collapse;
+}
+
+table th, table td {
+    border:1px solid #ddd;
+    padding:10px;
+}
+
+table th {
+    background:#0b4f6c;
+    color:white;
+}
+
+#map {
+    height:500px;
+    border-radius:12px;
+}
+
+.galeria {
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(280px,1fr));
+    gap:20px;
+}
+
+.galeria img {
+    width:100%;
+    border-radius:10px;
+}
+
+footer {
+    background:#0b4f6c;
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<h1>Turismo Económico desde Puerto Natales</h1>
+<p>Patagonia Chilena</p>
+</header>
+
+<div class="container">
+
+<div class="card">
+<h2>Punto de partida</h2>
+<img src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22900%22%20height%3D%22500%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%230b4f6c%22/%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%0A%20%20%20%20%20%20%20%20font-size%3D%2242%22%20fill%3D%22white%22%20font-family%3D%22Arial%22%3EPuerto%20Natales%3C/text%3E%0A%20%20%20%20%3C/svg%3E%0A%20%20%20%20" width="100%">
+</div>
+
+<div class="card">
+<h2>Costos aproximados</h2>
+
+<table>
+<tr>
+<th>Lugar</th>
+<th>Distancia</th>
+<th>Uber aprox.</th>
+<th>Entrada</th>
+</tr>
+
+<tr><td>Muelle Histórico</td><td>1 km</td><td>USD 2 - 4</td><td>Gratis</td></tr>
+<tr><td>La Mano</td><td>2 km</td><td>USD 3 - 5</td><td>Gratis</td></tr>
+<tr><td>Mirador Villa Cariño</td><td>4 km</td><td>USD 5 - 7</td><td>Gratis</td></tr>
+<tr><td>Cueva del Milodón</td><td>24 km</td><td>USD 18 - 30</td><td>USD 12</td></tr>
+<tr><td>Mirador Lago Grey</td><td>110 km</td><td>USD 90 - 140</td><td>Parque Nacional</td></tr>
+<tr><td>Base Torres</td><td>145 km</td><td>USD 120 - 180</td><td>Parque Nacional</td></tr>
+</table>
+
+</div>
+
+<div class="card">
+<h2>Mapa interactivo</h2>
+<div id="map"></div>
+</div>
+
+<div class="card">
+<h2>Galería turística</h2>
+
+<div class="galeria">
+
+<div>
+<img src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22900%22%20height%3D%22500%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%231d7874%22/%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%0A%20%20%20%20%20%20%20%20font-size%3D%2242%22%20fill%3D%22white%22%20font-family%3D%22Arial%22%3EMuelle%20Hist%C3%B3rico%3C/text%3E%0A%20%20%20%20%3C/svg%3E%0A%20%20%20%20">
+<h3>Muelle Histórico</h3>
+</div>
+
+<div>
+<img src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22900%22%20height%3D%22500%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23679289%22/%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%0A%20%20%20%20%20%20%20%20font-size%3D%2242%22%20fill%3D%22white%22%20font-family%3D%22Arial%22%3ELa%20Mano%3C/text%3E%0A%20%20%20%20%3C/svg%3E%0A%20%20%20%20">
+<h3>La Mano</h3>
+</div>
+
+<div>
+<img src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22900%22%20height%3D%22500%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23264653%22/%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%0A%20%20%20%20%20%20%20%20font-size%3D%2242%22%20fill%3D%22white%22%20font-family%3D%22Arial%22%3EMirador%20Villa%20Cari%C3%B1o%3C/text%3E%0A%20%20%20%20%3C/svg%3E%0A%20%20%20%20">
+<h3>Mirador Villa Cariño</h3>
+</div>
+
+<div>
+<img src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22900%22%20height%3D%22500%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%233a5a40%22/%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%0A%20%20%20%20%20%20%20%20font-size%3D%2242%22%20fill%3D%22white%22%20font-family%3D%22Arial%22%3ECueva%20del%20Milod%C3%B3n%3C/text%3E%0A%20%20%20%20%3C/svg%3E%0A%20%20%20%20">
+<h3>Cueva del Milodón</h3>
+</div>
+
+<div>
+<img src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22900%22%20height%3D%22500%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%23457b9d%22/%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%0A%20%20%20%20%20%20%20%20font-size%3D%2242%22%20fill%3D%22white%22%20font-family%3D%22Arial%22%3EMirador%20Lago%20Grey%3C/text%3E%0A%20%20%20%20%3C/svg%3E%0A%20%20%20%20">
+<h3>Mirador Lago Grey</h3>
+</div>
+
+<div>
+<img src="data:image/svg+xml;charset=UTF-8,%0A%20%20%20%20%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%22900%22%20height%3D%22500%22%3E%0A%20%20%20%20%20%20%20%20%3Crect%20width%3D%22100%25%22%20height%3D%22100%25%22%20fill%3D%22%236d597a%22/%3E%0A%20%20%20%20%20%20%20%20%3Ctext%20x%3D%2250%25%22%20y%3D%2250%25%22%20dominant-baseline%3D%22middle%22%20text-anchor%3D%22middle%22%0A%20%20%20%20%20%20%20%20font-size%3D%2242%22%20fill%3D%22white%22%20font-family%3D%22Arial%22%3EBase%20Torres%3C/text%3E%0A%20%20%20%20%3C/svg%3E%0A%20%20%20%20">
+<h3>Base Torres</h3>
+</div>
+
+</div>
+</div>
+
+</div>
+
+<footer>
+Puerto Natales • Turismo Económico
+</footer>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+<script>
+var map = L.map('map').setView([-51.726, -72.506], 10);
+
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap'
+}).addTo(map);
+
+var lugares = [
+    ["Puerto Natales", -51.726, -72.506],
+    ["Muelle Histórico", -51.7245, -72.5060],
+    ["La Mano", -51.7315, -72.4998],
+    ["Mirador Villa Cariño", -51.7440, -72.5150],
+    ["Cueva del Milodón", -51.5730, -72.6170],
+    ["Mirador Lago Grey", -51.0730, -73.0480],
+    ["Base Torres", -50.9420, -72.9860]
+];
+
+lugares.forEach(function(lugar){
+    L.marker([lugar[1], lugar[2]])
+        .addTo(map)
+        .bindPopup("<b>" + lugar[0] + "</b>");
+});
+</script>
+
+</body>
+</html>
